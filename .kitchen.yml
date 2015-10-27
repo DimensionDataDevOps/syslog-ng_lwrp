@@ -13,5 +13,5 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[syslog-ng::default]
+      - recipe[syslog-ng_test::default]
     attributes:
