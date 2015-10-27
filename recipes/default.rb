@@ -17,6 +17,10 @@
 # limitations under the License.
 #
 
+if platform_family?('rhel')
+  include_recipe 'yum-epel'
+end
+
 package "syslog-ng"
 
 cookbook_file "#{node[:syslog_ng][:config_dir]}/syslog-ng.conf" do
