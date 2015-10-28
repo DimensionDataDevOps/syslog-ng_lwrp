@@ -5,7 +5,11 @@
 #
 
 source <%= @application[:source_prefix] %><%= @application[:name] %> {
-  udp (ip(<%= @application[:host] %>) port(<%= @application[:port] %>));
+  <% @drivers.each do |driver| %>
+    <%= driver['driver'] %>(
+      <%= driver['options'] %>
+    );
+  <% end %>
 };
 
 # do not forget the empty line

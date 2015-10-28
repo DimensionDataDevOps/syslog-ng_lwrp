@@ -30,6 +30,21 @@ define :syslog_ng_source, :template => "syslog_ng_source.erb" do
     :port => params[:port] || "514",
   }
 
+  if params[:drivers]
+    drivers = params[:drivers]
+  else
+    drivers = [
+      {
+        'driver' => 'tcp',
+        'options' => "ip(\"#{application[:host]}\") port(#{application[:port]})"
+      },
+      {
+        'driver' => 'udp',
+        'options' => "ip(\"#{application[:host]}\") port(#{application[:port]})"
+      }
+    ]
+  end
+
   template "#{node[:syslog_ng][:config_dir]}/conf.d/#{application[:index]}#{application[:name]}" do
     source params[:template]
     owner node[:syslog_ng][:user]
@@ -43,7 +58,7 @@ define :syslog_ng_source, :template => "syslog_ng_source.erb" do
 
     variables(
       :application => application,
-      :params => params
+      :drivers => drivers
     )
 
     notifies :restart, resources(:service => "syslog-ng"), :immediately
