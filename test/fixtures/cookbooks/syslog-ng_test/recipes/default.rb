@@ -34,3 +34,19 @@ syslog_ng_forwarder "application_foo_warnings" do
   destination_port "514"
   destination_protocol "udp"
 end
+
+syslog_ng_destination "tmp_logfile" do
+  index "06"
+  drivers [
+    {
+      "driver" => "file",
+      "options" => '"/tmp/logfile"',
+    }
+  ]
+end
+
+syslog_ng_logpath "test_logpath" do
+  index "07"
+  sources ["custom_source"]
+  destinations ["tmp_logfile"]
+end
