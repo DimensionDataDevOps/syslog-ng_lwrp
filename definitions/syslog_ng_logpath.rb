@@ -30,6 +30,11 @@ define :syslog_ng_logpath, :template => "syslog_ng_logpath.erb" do
     :flags => params[:flags] || [],
   }
 
+  # Allow users to use a string if only one of a type is needed
+  [:sources, :filters, :destinations].each do |type|
+    logpath[type] = [logpath[type]] if logpath[type].is_a?(String)
+  end
+
   template "#{node[:syslog_ng][:config_dir]}/conf.d/#{logpath[:index]}#{logpath[:name]}" do
     source params[:template]
     owner node[:syslog_ng][:user]
