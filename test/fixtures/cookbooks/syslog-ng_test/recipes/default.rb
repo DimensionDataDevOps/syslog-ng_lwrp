@@ -50,3 +50,8 @@ syslog_ng_logpath "test_logpath" do
   sources ["custom_source"]
   destinations ["tmp_logfile"]
 end
+
+syslog_ng_file "myapp" do
+  index "08"
+  source_name [ "custom_source", "network_source" ]
+end

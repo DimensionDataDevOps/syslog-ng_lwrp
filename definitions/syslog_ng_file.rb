@@ -20,12 +20,11 @@
 define :syslog_ng_file, :template => "syslog_ng_file.erb" do
   include_recipe "syslog-ng"
 
-
   application = {
     :name => params[:name],
     :index => params[:index] || "02",
     :cookbook => params[:cookbook] || "syslog-ng",
-    :source_name => params[:source_name],
+    :source_name => params[:source_name] || params[:source],
     :source_prefix => params[:source_prefix] || node[:syslog_ng][:source_prefix],
     :days_uncompressed => params[:days_uncompressed] || 1,
     :log_base => params[:log_base] || node[:syslog_ng][:log_dir],
@@ -51,25 +50,25 @@ define :syslog_ng_file, :template => "syslog_ng_file.erb" do
     action :create
   end
 
-  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{application[:index]}#{application[:name]}" do
-    source params[:template]
-    owner node[:syslog_ng][:user]
-    group node[:syslog_ng][:group]
-    mode 00640
-    cookbook application[:cookbook]
-
-    if params[:cookbook]
-      cookbook params[:cookbook]
-    end
-
-    variables(
-      :application => application,
-      :params => params
+  syslog_ng_destination "#{application[:name]}_destination" do
+    index application[:index]
+    drivers(
+      {
+        'driver' => 'file',
+        'options' => "\"#{application[:log_base]}/#{application[:name]}/#{application[:log_name]}\""
+      }
     )
-
-    notifies :restart, resources(:service => "syslog-ng"), :immediately
   end
-  
+
+  if application[:source_name]
+    syslog_ng_logpath "#{application[:name]}_logpath" do
+      index application[:index]
+      sources application[:source_name]
+      filters application[:filter_name]
+      destinations ["#{application[:name]}_destination"]
+    end
+  end
+
   template "/etc/cron.daily/#{application[:name]}_compress_logs" do
     source "compress_logs.erb"
     cookbook application[:cookbook]
@@ -78,5 +77,4 @@ define :syslog_ng_file, :template => "syslog_ng_file.erb" do
     group "root"
     variables( :application => application )
   end
-
 end
