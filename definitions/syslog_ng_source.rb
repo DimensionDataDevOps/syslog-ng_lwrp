@@ -30,9 +30,10 @@ define :syslog_ng_source, :template => "syslog_ng_source.erb" do
     :port => params[:port] || "514",
   }
 
-  if params[:drivers]
-    drivers = params[:drivers]
-  else
+  drivers = params[:drivers] || params[:driver]
+  drivers = [drivers] if drivers.is_a?(Hash)
+
+  if drivers.nil?
     drivers = [
       {
         'driver' => 'tcp',

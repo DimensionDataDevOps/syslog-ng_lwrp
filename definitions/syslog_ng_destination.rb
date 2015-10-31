@@ -35,7 +35,8 @@ define :syslog_ng_destination, :template => "syslog_ng_destination.erb" do
       }
     ]
   else
-    drivers = params[:drivers]
+    drivers = params[:drivers] || params[:driver]
+    drivers = [drivers] if drivers.is_a?(Hash)
   end
 
   template "#{node[:syslog_ng][:config_dir]}/conf.d/#{destination[:index]}#{destination[:name]}" do
