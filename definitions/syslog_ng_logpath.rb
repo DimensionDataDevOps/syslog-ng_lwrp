@@ -31,7 +31,7 @@ define :syslog_ng_logpath, :template => "syslog_ng_logpath.erb" do
   }
 
   # Allow users to use a string if only one of a type is needed
-  [:sources, :filters, :destinations].each do |type|
+  [:sources, :filters, :destinations, :flags].each do |type|
     logpath[type] = [logpath[type]] if logpath[type].is_a?(String)
   end
 
