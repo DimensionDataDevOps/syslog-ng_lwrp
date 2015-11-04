@@ -4,30 +4,30 @@
 #
 # Copyright 2012, Artem Veremey
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
+# Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
+# distributed under the License is distributed on an 'AS IS' BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
 
-define :syslog_ng_logpath, :template => "syslog_ng_logpath.erb" do
-  include_recipe "syslog-ng"
+define :syslog_ng_logpath, template: 'syslog_ng_logpath.erb' do
+  include_recipe 'syslog-ng'
 
   logpath = {
-    :name => params[:name],
-    :index => params[:index] || "02",
-    :cookbook => params[:cookbook] || "syslog-ng",
-    :sources => params[:sources],
-    :destinations => params[:destinations],
-    :filters => params[:filters] || [],
-    :flags => params[:flags] || [],
+    name: params[:name],
+    index: params[:index] || '02',
+    cookbook: params[:cookbook] || 'syslog-ng',
+    sources: params[:sources],
+    destinations: params[:destinations],
+    filters: params[:filters] || [],
+    flags: params[:flags] || []
   }
 
   # Allow users to use a string if only one of a type is needed
@@ -42,15 +42,12 @@ define :syslog_ng_logpath, :template => "syslog_ng_logpath.erb" do
     mode 00640
     cookbook logpath[:cookbook]
 
-    if params[:cookbook]
-      cookbook params[:cookbook]
-    end
+    cookbook params[:cookbook] if params[:cookbook]
 
     variables(
-      :logpath => logpath
+      logpath: logpath
     )
 
-    notifies :restart, resources(:service => "syslog-ng"), :immediately
+    notifies :restart, resources(service: 'syslog-ng'), :immediately
   end
-
 end

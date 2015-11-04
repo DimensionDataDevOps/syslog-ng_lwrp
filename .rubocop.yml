@@ -1,0 +1,9 @@
+Metrics/LineLength:
+  Max: 160
+
+Style/SingleSpaceBeforeFirstArg:
+  Enabled: false
+
+Style/FileName:
+  Exclude:
+    - test/integration/default/serverspec/syslog-ng_daemon_spec.rb
