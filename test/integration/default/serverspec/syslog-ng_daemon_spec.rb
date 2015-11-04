@@ -9,6 +9,10 @@ describe "Syslog-ng Daemon" do
     expect(port(514)).to be_listening
   end
 
+  it "is listening on port 9999" do
+    expect(port(9999)).to be_listening
+  end
+
   it "has a running service of syslog-ng" do
     expect(service("syslog-ng")).to be_running
   end

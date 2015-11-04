@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: syslog-ng
-# Definition:: syslog_ng_file
+# Definition:: syslog_ng_logpath
 #
 # Copyright 2012, Artem Veremey
 #
@@ -17,52 +17,40 @@
 # limitations under the License.
 #
 
-define :syslog_ng_source, :template => "syslog_ng_source.erb" do
+define :syslog_ng_logpath, :template => "syslog_ng_logpath.erb" do
   include_recipe "syslog-ng"
 
-
-  application = {
+  logpath = {
     :name => params[:name],
-    :source_prefix => params[:source_prefix] || node[:syslog_ng][:source_prefix],
     :index => params[:index] || "02",
     :cookbook => params[:cookbook] || "syslog-ng",
-    :host => params[:host] || "127.0.0.1",
-    :port => params[:port] || "514",
+    :sources => params[:sources],
+    :destinations => params[:destinations],
+    :filters => params[:filters] || [],
+    :flags => params[:flags] || [],
   }
 
-  drivers = params[:drivers] || params[:driver]
-  drivers = [drivers] if drivers.is_a?(Hash)
-
-  if drivers.nil?
-    drivers = [
-      {
-        'driver' => 'tcp',
-        'options' => "ip(\"#{application[:host]}\") port(#{application[:port]})"
-      },
-      {
-        'driver' => 'udp',
-        'options' => "ip(\"#{application[:host]}\") port(#{application[:port]})"
-      }
-    ]
+  # Allow users to use a string if only one of a type is needed
+  [:sources, :filters, :destinations, :flags].each do |type|
+    logpath[type] = [logpath[type]] if logpath[type].is_a?(String)
   end
 
-  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{application[:index]}#{application[:name]}" do
+  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{logpath[:index]}#{logpath[:name]}" do
     source params[:template]
     owner node[:syslog_ng][:user]
     group node[:syslog_ng][:group]
     mode 00640
-    cookbook application[:cookbook]
+    cookbook logpath[:cookbook]
 
     if params[:cookbook]
       cookbook params[:cookbook]
     end
 
     variables(
-      :application => application,
-      :drivers => drivers
+      :logpath => logpath
     )
 
     notifies :restart, resources(:service => "syslog-ng"), :immediately
   end
-  
+
 end

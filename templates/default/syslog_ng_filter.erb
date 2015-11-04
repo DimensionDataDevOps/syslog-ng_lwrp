@@ -4,7 +4,7 @@
 # <%= node[:syslog_ng][:config_dir] %>/conf.d/<%= [@application[:index], @application[:name]].join %>
 #
 
-filter f_<%= @application[:name] %> {
+filter <%= node[:syslog_ng][:filter_prefix] %><%= @application[:name] %> {
   <%= @application[:filter] %>;
 };
 

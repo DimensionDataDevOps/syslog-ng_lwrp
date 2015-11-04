@@ -17,52 +17,44 @@
 # limitations under the License.
 #
 
-define :syslog_ng_source, :template => "syslog_ng_source.erb" do
+define :syslog_ng_destination, :template => "syslog_ng_destination.erb" do
   include_recipe "syslog-ng"
 
-
-  application = {
+  destination = {
     :name => params[:name],
-    :source_prefix => params[:source_prefix] || node[:syslog_ng][:source_prefix],
+    :destination_prefix => params[:destination_prefix] || node[:syslog_ng][:destination_prefix],
     :index => params[:index] || "02",
     :cookbook => params[:cookbook] || "syslog-ng",
-    :host => params[:host] || "127.0.0.1",
-    :port => params[:port] || "514",
   }
 
-  drivers = params[:drivers] || params[:driver]
-  drivers = [drivers] if drivers.is_a?(Hash)
-
-  if drivers.nil?
+  if params[:host]
     drivers = [
       {
-        'driver' => 'tcp',
-        'options' => "ip(\"#{application[:host]}\") port(#{application[:port]})"
-      },
-      {
-        'driver' => 'udp',
-        'options' => "ip(\"#{application[:host]}\") port(#{application[:port]})"
+        "driver" => "network",
+        "options" => "host(\"#{params[:host]}\"",
       }
     ]
+  else
+    drivers = params[:drivers] || params[:driver]
+    drivers = [drivers] if drivers.is_a?(Hash)
   end
 
-  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{application[:index]}#{application[:name]}" do
+  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{destination[:index]}#{destination[:name]}" do
     source params[:template]
     owner node[:syslog_ng][:user]
     group node[:syslog_ng][:group]
     mode 00640
-    cookbook application[:cookbook]
+    cookbook destination[:cookbook]
 
     if params[:cookbook]
       cookbook params[:cookbook]
     end
 
     variables(
-      :application => application,
+      :destination => destination,
       :drivers => drivers
     )
 
     notifies :restart, resources(:service => "syslog-ng"), :immediately
   end
-  
 end
