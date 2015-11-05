@@ -21,18 +21,6 @@ include_recipe 'yum-epel' if platform_family?('rhel')
 
 package 'syslog-ng'
 
-cookbook_file "#{node['syslog_ng']['config_dir']}/syslog-ng.conf" do
-  owner node['syslog_ng']['user']
-  group node['syslog_ng']['group']
-  mode 00640
-end
-
-cookbook_file '/etc/init.d/syslog-ng' do
-  owner node['syslog_ng']['user']
-  group node['syslog_ng']['group']
-  mode 00755
-end
-
 directory "#{node['syslog_ng']['config_dir']}/conf.d" do
   owner node['syslog_ng']['user']
   group node['syslog_ng']['group']
@@ -52,16 +40,16 @@ service 'syslog-ng' do
   action [:enable, :start]
 end
 
-template "#{node['syslog_ng']['config_dir']}/conf.d/00base" do
-  source '00base.erb'
+template "#{node['syslog_ng']['config_dir']}/syslog-ng.conf" do
+  source 'syslog-ng.conf.erb'
   owner node['syslog_ng']['user']
   group node['syslog_ng']['group']
   mode 00640
   variables(
-    sync: node['syslog_ng']['sync'],
+    conf_version: node['syslog_ng']['conf_version'],
+    flush_lines: node['syslog_ng']['flush_lines'],
     time_reopen: node['syslog_ng']['time_reopen'],
     log_fifo_size: node['syslog_ng']['log_fifo_size'],
-    long_hostnames: node['syslog_ng']['long_hostnames'],
     use_dns: node['syslog_ng']['use_dns'],
     use_fqdn: node['syslog_ng']['use_fqdn'],
     create_dirs: node['syslog_ng']['create_dirs'],
