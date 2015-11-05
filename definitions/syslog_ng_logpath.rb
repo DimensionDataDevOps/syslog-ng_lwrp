@@ -35,10 +35,10 @@ define :syslog_ng_logpath, template: 'syslog_ng_logpath.erb' do
     logpath[type] = [logpath[type]] if logpath[type].is_a?(String)
   end
 
-  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{logpath[:index]}#{logpath[:name]}" do
+  template "#{node['syslog_ng']['config_dir']}/conf.d/#{logpath[:index]}#{logpath[:name]}" do
     source params[:template]
-    owner node[:syslog_ng][:user]
-    group node[:syslog_ng][:group]
+    owner node['syslog_ng']['user']
+    group node['syslog_ng']['group']
     mode 00640
     cookbook logpath[:cookbook]
 
@@ -48,6 +48,6 @@ define :syslog_ng_logpath, template: 'syslog_ng_logpath.erb' do
       logpath: logpath
     )
 
-    notifies :restart, resources(service: 'syslog-ng'), :immediately
+    notifies :restart, 'service[syslog-ng]', :immediately
   end
 end

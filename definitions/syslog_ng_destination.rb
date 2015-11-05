@@ -22,7 +22,7 @@ define :syslog_ng_destination, template: 'syslog_ng_destination.erb' do
 
   destination = {
     name: params[:name],
-    destination_prefix: params[:destination_prefix] || node[:syslog_ng][:destination_prefix],
+    destination_prefix: params[:destination_prefix] || node['syslog_ng']['destination_prefix'],
     index: params[:index] || '02',
     cookbook: params[:cookbook] || 'syslog-ng'
   }
@@ -39,10 +39,10 @@ define :syslog_ng_destination, template: 'syslog_ng_destination.erb' do
     drivers = [drivers] if drivers.is_a?(Hash)
   end
 
-  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{destination[:index]}#{destination[:name]}" do
+  template "#{node['syslog_ng']['config_dir']}/conf.d/#{destination[:index]}#{destination[:name]}" do
     source params[:template]
-    owner node[:syslog_ng][:user]
-    group node[:syslog_ng][:group]
+    owner node['syslog_ng']['user']
+    group node['syslog_ng']['group']
     mode 00640
     cookbook destination[:cookbook]
 
@@ -53,6 +53,6 @@ define :syslog_ng_destination, template: 'syslog_ng_destination.erb' do
       drivers: drivers
     )
 
-    notifies :restart, resources(service: 'syslog-ng'), :immediately
+    notifies :restart, 'service[syslog-ng]', :immediately
   end
 end

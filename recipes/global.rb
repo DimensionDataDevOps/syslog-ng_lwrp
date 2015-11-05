@@ -27,8 +27,8 @@ service 'rsyslog' do
   action [:disable, :stop]
 end
 
-cookbook_file "#{node[:syslog_ng][:config_dir]}/conf.d/01global" do
-  owner node[:syslog_ng][:user]
-  group node[:syslog_ng][:group]
+cookbook_file "#{node['syslog_ng']['config_dir']}/conf.d/01global" do
+  owner node['syslog_ng']['user']
+  group node['syslog_ng']['group']
   mode 00640
 end

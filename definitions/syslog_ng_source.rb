@@ -22,7 +22,7 @@ define :syslog_ng_source, template: 'syslog_ng_source.erb' do
 
   application = {
     name: params[:name],
-    source_prefix: params[:source_prefix] || node[:syslog_ng][:source_prefix],
+    source_prefix: params[:source_prefix] || node['syslog_ng']['source_prefix'],
     index: params[:index] || '02',
     cookbook: params[:cookbook] || 'syslog-ng',
     host: params[:host] || '127.0.0.1',
@@ -45,10 +45,10 @@ define :syslog_ng_source, template: 'syslog_ng_source.erb' do
     ]
   end
 
-  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{application[:index]}#{application[:name]}" do
+  template "#{node['syslog_ng']['config_dir']}/conf.d/#{application[:index]}#{application[:name]}" do
     source params[:template]
-    owner node[:syslog_ng][:user]
-    group node[:syslog_ng][:group]
+    owner node['syslog_ng']['user']
+    group node['syslog_ng']['group']
     mode 00640
     cookbook application[:cookbook]
 
@@ -59,6 +59,6 @@ define :syslog_ng_source, template: 'syslog_ng_source.erb' do
       drivers: drivers
     )
 
-    notifies :restart, resources(service: 'syslog-ng'), :immediately
+    notifies :restart, 'service[syslog-ng]', :immediately
   end
 end

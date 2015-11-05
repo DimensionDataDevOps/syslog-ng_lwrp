@@ -27,10 +27,10 @@ define :syslog_ng_filter, template: 'syslog_ng_filter.erb' do
     filter: params[:filter]
   }
 
-  template "#{node[:syslog_ng][:config_dir]}/conf.d/#{application[:index]}#{application[:name]}" do
+  template "#{node['syslog_ng']['config_dir']}/conf.d/#{application[:index]}#{application[:name]}" do
     source params[:template]
-    owner node[:syslog_ng][:user]
-    group node[:syslog_ng][:group]
+    owner node['syslog_ng']['user']
+    group node['syslog_ng']['group']
     mode 00640
     cookbook application[:cookbook]
 
@@ -41,6 +41,6 @@ define :syslog_ng_filter, template: 'syslog_ng_filter.erb' do
       params: params
     )
 
-    notifies :restart, resources(service: 'syslog-ng'), :immediately
+    notifies :restart, 'service[syslog-ng]', :immediately
   end
 end
