@@ -17,8 +17,6 @@
 # limitations under the License.
 #
 
-include_recipe 'yum-epel' if platform_family?('rhel')
-
 package 'syslog-ng'
 
 directory "#{node['syslog_ng']['config_dir']}/conf.d" do
