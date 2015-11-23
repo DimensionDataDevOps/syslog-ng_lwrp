@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+package 'syslog-ng-core' if platform?('ubuntu')
+
 package 'syslog-ng'
 
 directory "#{node['syslog_ng']['config_dir']}/conf.d" do
