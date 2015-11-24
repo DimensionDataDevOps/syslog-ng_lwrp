@@ -28,6 +28,7 @@ define :syslog_ng_filter, template: 'syslog_ng_filter.erb' do
   }
 
   template "#{node['syslog_ng']['config_dir']}/conf.d/#{application[:index]}#{application[:name]}" do
+    action params[:action] || :create
     source params[:template]
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
