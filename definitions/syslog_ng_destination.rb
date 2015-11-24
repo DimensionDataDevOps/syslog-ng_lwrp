@@ -53,6 +53,6 @@ define :syslog_ng_destination, template: 'syslog_ng_destination.erb' do
       drivers: drivers
     )
 
-    notifies :restart, 'service[syslog-ng]', :immediately
+    notifies :restart, 'service[syslog-ng]', :delayed
   end
 end

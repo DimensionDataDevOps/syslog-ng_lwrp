@@ -48,6 +48,6 @@ define :syslog_ng_logpath, template: 'syslog_ng_logpath.erb' do
       logpath: logpath
     )
 
-    notifies :restart, 'service[syslog-ng]', :immediately
+    notifies :restart, 'service[syslog-ng]', :delayed
   end
 end

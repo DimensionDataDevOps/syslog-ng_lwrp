@@ -41,6 +41,6 @@ define :syslog_ng_filter, template: 'syslog_ng_filter.erb' do
       params: params
     )
 
-    notifies :restart, 'service[syslog-ng]', :immediately
+    notifies :restart, 'service[syslog-ng]', :delayed
   end
 end
