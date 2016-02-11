@@ -42,12 +42,11 @@ define :syslog_ng_forwarder, template: 'syslog_ng_forwarder.erb' do
     )
   end
 
-  if application[:source_name]
-    syslog_ng_logpath "#{application[:name]}_logpath" do
-      index application[:index]
-      sources application[:source_name]
-      filters application[:filter_name]
-      destinations ["#{application[:name]}_destination"]
-    end
+  syslog_ng_logpath "#{application[:name]}_logpath" do
+    action application[:source_name] ? :create : :delete
+    index application[:index]
+    sources application[:source_name]
+    filters application[:filter_name]
+    destinations ["#{application[:name]}_destination"]
   end
 end

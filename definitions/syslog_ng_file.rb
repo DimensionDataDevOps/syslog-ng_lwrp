@@ -56,13 +56,12 @@ define :syslog_ng_file, template: 'syslog_ng_file.erb' do
     )
   end
 
-  if application[:source_name]
-    syslog_ng_logpath "#{application[:name]}_logpath" do
-      index application[:index]
-      sources application[:source_name]
-      filters application[:filter_name]
-      destinations ["#{application[:name]}_destination"]
-    end
+  syslog_ng_logpath "#{application[:name]}_logpath" do
+    action application[:source_name] ? :create : :delete
+    index application[:index]
+    sources application[:source_name]
+    filters application[:filter_name]
+    destinations ["#{application[:name]}_destination"]
   end
 
   template "/etc/cron.daily/#{application[:name]}_compress_logs" do
