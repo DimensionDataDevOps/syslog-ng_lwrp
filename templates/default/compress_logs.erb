@@ -1,2 +1,2 @@
 #!/bin/sh
-find "<%= @application[:log_base] %>/<%= @application[:name] %>" -type f ! -mtime '-<%= @application[:days_uncompressed] %>' ! -name '*gz' -exec gzip \{\} \;
+find "<%= @log_base %>/<%= @name %>" -type f ! -mtime '-<%= @days_uncompressed %>' ! -name '*gz' -exec gzip \{\} \;

@@ -72,7 +72,7 @@ Usage
     syslog_ng_forwarder "application_foo_warnings" do
       index "05"
       source_name "custom_source"
-      filter_name "warnings"
+      filters ["warnings"]
       destination_host "example.com"
       destination_port "514"
       destination_protocol "udp"
