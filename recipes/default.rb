@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-include_recipe 'yum-epel' if platform_family?('rhel')
+package 'syslog-ng-core' if platform?('ubuntu')
 
 package 'syslog-ng'
 
@@ -57,5 +57,5 @@ template "#{node['syslog_ng']['config_dir']}/syslog-ng.conf" do
     chain_hostnames: node['syslog_ng']['chain_hostnames'],
     global_opts: node['syslog_ng']['global_opts']
   )
-  notifies :restart, 'service[syslog-ng]'
+  notifies :restart, 'service[syslog-ng]', :delayed
 end

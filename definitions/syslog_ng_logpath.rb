@@ -36,6 +36,7 @@ define :syslog_ng_logpath, template: 'syslog_ng_logpath.erb' do
   end
 
   template "#{node['syslog_ng']['config_dir']}/conf.d/#{logpath[:index]}#{logpath[:name]}" do
+    action params[:action] || :create
     source params[:template]
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
@@ -48,6 +49,6 @@ define :syslog_ng_logpath, template: 'syslog_ng_logpath.erb' do
       logpath: logpath
     )
 
-    notifies :restart, 'service[syslog-ng]', :immediately
+    notifies :restart, 'service[syslog-ng]', :delayed
   end
 end
