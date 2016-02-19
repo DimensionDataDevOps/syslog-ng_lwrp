@@ -29,8 +29,8 @@ end
 
 syslog_ng_forwarder 'application_foo_warnings' do
   index '05'
-  source_name 'custom_source'
-  filter_name 'warnings'
+  sources 'custom_source'
+  filters 'warnings'
   destination_host 'localhost'
   destination_port '514'
   destination_protocol 'udp'
@@ -54,5 +54,5 @@ end
 
 syslog_ng_file 'myapp' do
   index '08'
-  source_name %w(custom_source network_source)
+  sources %w(custom_source network_source)
 end
