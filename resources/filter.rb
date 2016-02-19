@@ -1,7 +1,6 @@
 resource_name :syslog_ng_filter
 
 property :name, String, name_property: true
-property :host, String, default: 'localhost'
 property :index, String, default: '03'
 property :filter_prefix, String, default: node['syslog_ng']['filter_prefix']
 property :template_file, String, default: 'syslog_ng_filter.erb'
