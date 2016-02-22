@@ -1,3 +1,5 @@
+include Chef::SyslogNg
+
 resource_name :syslog_ng_destination
 
 property :name, String, name_property: true
@@ -28,11 +30,7 @@ action :create do
     fail 'Please specify driver(s) or a host.'
   end
 
-  service 'syslog-ng' do
-    action :nothing
-  end
-
-  template "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
+  tmpl = template "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
     action :create
     source template_file
     owner node['syslog_ng']['user']
@@ -46,9 +44,9 @@ action :create do
       destination_prefix: destination_prefix,
       drivers: final_drivers
     )
-
-    notifies :restart, 'service[syslog-ng]', :delayed
   end
+
+  service_notify tmpl, new_resource
 end
 
 action :delete do

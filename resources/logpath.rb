@@ -1,3 +1,5 @@
+include Chef::SyslogNg
+
 resource_name :syslog_ng_logpath
 
 property :name, String, name_property: true
@@ -18,11 +20,7 @@ default_action :create
 action :create do
   include_recipe 'syslog-ng'
 
-  service 'syslog-ng' do
-    action :nothing
-  end
-
-  template "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
+  tmpl = template "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
     action :create
     source template_file
     owner node['syslog_ng']['user']
@@ -43,9 +41,9 @@ action :create do
       destination_prefix: destination_prefix,
       filter_prefix: filter_prefix
     )
-
-    notifies :restart, 'service[syslog-ng]', :delayed
   end
+
+  service_notify tmpl, new_resource
 end
 
 action :delete do
