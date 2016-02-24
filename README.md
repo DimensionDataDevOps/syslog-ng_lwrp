@@ -21,8 +21,8 @@ Syslog NG can be obtained [here: balabit.com](http://www.balabit.com/downloads/f
 Requirements
 ============
 
-* Chef 0.8+
-* Syslog-NG 2.x package
+* Chef 12.5+
+* Syslog-NG 3.x package
 
 Usage
 =====
