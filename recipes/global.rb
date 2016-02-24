@@ -32,7 +32,7 @@ end
 
 syslog_ng_source 'sys' do
   drivers [
-    { 'driver' => 'file', 'options' => '"/proc/kmsg" log_prefix("kernel: ")' },
+    { 'driver' => 'file', 'options' => '"/proc/kmsg" program_override("kernel")' },
     { 'driver' => 'unix-stream', 'options' => '"/dev/log"' },
     { 'driver' => 'internal' }
   ]
