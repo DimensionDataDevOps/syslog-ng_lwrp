@@ -21,7 +21,7 @@ include_recipe 'syslog-ng'
 
 package 'rsyslog' do
   action :purge
-  notifies :start, 'service[syslog-ng]', :delayed  # The purge may stop syslog-ng
+  notifies :start, 'service[syslog-ng]', :delayed # The purge may stop syslog-ng
 end
 
 # Cleanup from < 2.0.2

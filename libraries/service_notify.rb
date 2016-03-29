@@ -1,4 +1,6 @@
+
 class Chef
+  # Restart notification for syslog-ng service.
   module SyslogNg
     # Adds a notification directly to the top level run_context based on if the template changed.
     # This hoop jumping is because I can't figure out how to have the template notify the service directly without other problems.
