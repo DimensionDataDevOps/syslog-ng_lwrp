@@ -19,17 +19,68 @@
 
 include_recipe 'syslog-ng'
 
-service 'syslog' do
-  action [:disable, :stop]
+package 'rsyslog' do
+  action :purge
+  notifies :start, 'service[syslog-ng]', :delayed # The purge may stop syslog-ng
 end
 
-service 'rsyslog' do
-  action [:disable, :stop]
-end
-
+# Cleanup from < 2.0.2
 cookbook_file "#{node['syslog_ng']['config_dir']}/conf.d/01global" do
-  owner node['syslog_ng']['user']
-  group node['syslog_ng']['group']
-  mode 00640
+  action :delete
   notifies :restart, 'service[syslog-ng]', :delayed
+end
+
+syslog_ng_source 'sys' do
+  drivers [
+    { 'driver' => 'file', 'options' => '"/proc/kmsg" program_override("kernel")' },
+    { 'driver' => 'unix-stream', 'options' => '"/dev/log"' },
+    { 'driver' => 'internal' }
+  ]
+end
+
+{
+  'cons' => { 'driver' => 'file', 'options' => '"/dev/console"' },
+  'mesg' => { 'driver' => 'file', 'options' => '"/var/log/messages"' },
+  'auth' => { 'driver' => 'file', 'options' => '"/var/log/secure"' },
+  'mail' => { 'driver' => 'file', 'options' => '"/var/log/maillog" flush_lines(10)' },
+  'spol' => { 'driver' => 'file', 'options' => '"/var/log/spooler"' },
+  'boot' => { 'driver' => 'file', 'options' => '"/var/log/boot.log"' },
+  'cron' => { 'driver' => 'file', 'options' => '"/var/log/cron"' },
+  'kern' => { 'driver' => 'file', 'options' => '"/var/log/kern"' },
+  'mlal' => { 'driver' => 'usertty', 'options' => '"*"' }
+}.each do |dest_name, driver|
+  syslog_ng_destination(dest_name) { drivers driver }
+end
+
+{
+  'default' => 'level(info..emerg) and not (facility(mail) or facility(authpriv) or facility(cron))',
+  'kernel' => 'facility(kern)',
+  'auth' => 'facility(authpriv)',
+  'mail' => 'facility(mail)',
+  'emergency' => 'level(emerg)',
+  'news' => 'facility(uucp) or (facility(news) and level(crit..emerg))',
+  'boot' => 'facility(local7)',
+  'cron' => 'facility(cron)'
+}.each do |filter_name, filter_rule|
+  syslog_ng_filter filter_name do
+    filter filter_rule
+  end
+end
+
+{
+  'cons' => 'kernel',
+  'kern' => 'kernel',
+  'mesg' => 'default',
+  'auth' => 'auth',
+  'mail' => 'mail',
+  'mlal' => 'emergency',
+  'spol' => 'news',
+  'boot' => 'boot',
+  'cron' => 'cron'
+}.each do |logpath_destination, logpath_filters|
+  syslog_ng_logpath "global_#{logpath_destination}" do
+    sources 'sys'
+    filters logpath_filters
+    destinations logpath_destination
+  end
 end
