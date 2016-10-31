@@ -1,7 +1,7 @@
 Metrics/LineLength:
   Max: 160
 
-Style/SingleSpaceBeforeFirstArg:
+Style/SpaceBeforeFirstArg:
   Enabled: false
 
 Style/FileName:

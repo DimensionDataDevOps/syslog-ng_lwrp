@@ -31,12 +31,10 @@ action :create do
     variables(
       index: index,
       logpath_name: name,
-      # rubocop:disable Style/SpaceAroundOperators
       sources:      sources.is_a?(String)      ? [sources]      : sources,
       filters:      filters.is_a?(String)      ? [filters]      : filters,
       destinations: destinations.is_a?(String) ? [destinations] : destinations,
       flags:        flags.is_a?(String)        ? [flags]        : flags,
-      # rubocop:enable Style/SpaceAroundOperators
       source_prefix: source_prefix,
       destination_prefix: destination_prefix,
       filter_prefix: filter_prefix

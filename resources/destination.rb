@@ -27,7 +27,7 @@ action :create do
       }
     ]
   else
-    fail 'Please specify driver(s) or a host.'
+    raise 'Please specify driver(s) or a host.'
   end
 
   tmpl = template "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
