@@ -39,3 +39,10 @@ action :delete do
     action :delete
   end
 end
+
+# https://github.com/chef/chef/issues/4537
+action_class do
+  def whyrun_supported?
+    true
+  end
+end
