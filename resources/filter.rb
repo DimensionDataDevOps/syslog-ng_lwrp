@@ -43,3 +43,10 @@ action :delete do
     notifies :restart, 'service[syslog-ng]', :delayed
   end
 end
+
+# https://github.com/chef/chef/issues/4537
+action_class do
+  def whyrun_supported?
+    true
+  end
+end
