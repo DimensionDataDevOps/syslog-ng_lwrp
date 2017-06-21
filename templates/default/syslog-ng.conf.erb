@@ -8,16 +8,8 @@
 @include "scl.conf"
 
 options {
-  flush_lines (<%=@flush_lines%>);
-  time_reopen (<%=@time_reopen%>);
-  log_fifo_size (<%=@log_fifo_size%>);
-  use_dns (<%=@use_dns%>);
-  use_fqdn (<%=@use_fqdn%>);
-  create_dirs (<%=@create_dirs%>);
-  keep_hostname (<%=@keep_hostname%>);
-  chain_hostnames (<%=@chain_hostnames%>);
-  <% @global_opts.each do |k,v| -%>
-  <%=k%> (<%=v%>);
+  <% @options.each do |k,v| -%>
+  <%= k.to_s.gsub(/_/, '-')  %> (<%= v %>);
   <% end -%>
 };
 
