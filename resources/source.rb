@@ -4,7 +4,7 @@ resource_name :syslog_ng_source
 
 property :name, String, name_property: true
 property :host, String, default: 'localhost'
-property :port, [Fixnum, String], default: 514
+property :port, [Integer, String], default: 514
 property :index, String, default: '02'
 property :source_prefix, String, default: node['syslog_ng']['source_prefix']
 property :template_file, String, default: 'syslog_ng_source.erb'
@@ -16,29 +16,29 @@ default_action :create
 action :create do
   include_recipe 'syslog-ng'
 
-  if drivers.is_a?(Hash)
-    final_drivers = [drivers]
-  elsif drivers.is_a?(Array)
-    final_drivers = drivers
-  else
-    final_drivers = [
-      {
-        'driver' => 'tcp',
-        'options' => "ip(\"#{host}\") port(#{port})"
-      },
-      {
-        'driver' => 'udp',
-        'options' => "ip(\"#{host}\") port(#{port})"
-      }
-    ]
-  end
+  final_drivers = if drivers.is_a?(Hash)
+                    [drivers]
+                  elsif drivers.is_a?(Array)
+                    drivers
+                  else
+                    [
+                      {
+                        'driver' => 'tcp',
+                        'options' => "ip(\"#{host}\") port(#{port})"
+                      },
+                      {
+                        'driver' => 'udp',
+                        'options' => "ip(\"#{host}\") port(#{port})"
+                      }
+                    ]
+                  end
 
   tmpl = template "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
     action :create
     source template_file
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
-    mode 00640
+    mode 0o0640
     cookbook 'syslog-ng'
 
     variables(

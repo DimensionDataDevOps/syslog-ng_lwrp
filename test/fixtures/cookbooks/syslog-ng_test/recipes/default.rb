@@ -55,5 +55,5 @@ end
 
 syslog_ng_file 'myapp' do
   index '08'
-  sources %w(custom_source network_source)
+  sources %w[custom_source network_source]
 end
