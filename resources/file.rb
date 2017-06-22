@@ -20,14 +20,14 @@ action :create do
   directory log_base do
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
-    mode 00755
+    mode 0o0755
     action :create
   end
 
   directory "#{log_base}/#{name}" do
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
-    mode 00755
+    mode 0o0755
     action :create
   end
 
@@ -50,13 +50,14 @@ action :create do
   template "/etc/cron.daily/#{name}_compress_logs" do
     source 'compress_logs.erb'
     cookbook 'syslog-ng'
-    mode 0755
+    mode 0o0755
     owner 'root'
     group 'root'
     variables(
       log_base: log_base,
       name: new_resource.name,
-      days_uncompressed: days_uncompressed)
+      days_uncompressed: days_uncompressed
+    )
   end
 end
 

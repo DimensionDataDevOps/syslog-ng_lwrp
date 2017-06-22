@@ -1,7 +1,10 @@
 Metrics/LineLength:
   Max: 160
 
-Style/SpaceBeforeFirstArg:
+Metrics/BlockLength:
+  Max: 100
+
+Layout/SpaceBeforeFirstArg:
   Enabled: false
 
 Style/FileName:
