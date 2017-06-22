@@ -1,6 +1,5 @@
 include_recipe 'yum-epel' if platform_family?('rhel')
 
-include_recipe 'syslog-ng'
 include_recipe 'syslog-ng::global'
 
 syslog_ng_source 'network_source' do
@@ -55,5 +54,5 @@ end
 
 syslog_ng_file 'myapp' do
   index '08'
-  sources %w(custom_source network_source)
+  sources %w[custom_source network_source]
 end

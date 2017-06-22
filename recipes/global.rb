@@ -17,12 +17,12 @@
 # limitations under the License.
 #
 
-include_recipe 'syslog-ng'
-
 package 'rsyslog' do
   action :purge
   notifies :start, 'service[syslog-ng]', :delayed # The purge may stop syslog-ng
 end
+
+include_recipe 'syslog-ng'
 
 # Cleanup from < 2.0.2
 cookbook_file "#{node['syslog_ng']['config_dir']}/conf.d/01global" do
@@ -32,8 +32,7 @@ end
 
 syslog_ng_source 'sys' do
   drivers [
-    { 'driver' => 'file', 'options' => '"/proc/kmsg" program_override("kernel")' },
-    { 'driver' => 'unix-stream', 'options' => '"/dev/log"' },
+    { 'driver' => 'system' },
     { 'driver' => 'internal' }
   ]
 end

@@ -25,7 +25,7 @@ action :create do
     source template_file
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
-    mode 00640
+    mode 0o0640
     cookbook 'syslog-ng'
 
     variables(
