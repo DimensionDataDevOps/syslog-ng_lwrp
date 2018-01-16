@@ -20,24 +20,24 @@ default_action :create
 action :create do
   include_recipe 'syslog-ng'
 
-  tmpl = template "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
+  tmpl = template "#{node['syslog_ng']['config_dir']}/conf.d/#{new_resource.index}#{new_resource.name}" do
     action :create
-    source template_file
+    source new_resource.template_file
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
     mode 0o0640
     cookbook 'syslog-ng'
 
     variables(
-      index: index,
-      logpath_name: name,
-      sources:      sources.is_a?(String)      ? [sources]      : sources,
-      filters:      filters.is_a?(String)      ? [filters]      : filters,
-      destinations: destinations.is_a?(String) ? [destinations] : destinations,
-      flags:        flags.is_a?(String)        ? [flags]        : flags,
-      source_prefix: source_prefix,
-      destination_prefix: destination_prefix,
-      filter_prefix: filter_prefix
+      index: new_resource.index,
+      logpath_name: new_resource.name,
+      sources: new_resource.sources.is_a?(String) ? [new_resource.sources] : new_resource.sources,
+      filters: new_resource.filters.is_a?(String) ? [new_resource.filters] : new_resource.filters,
+      destinations: new_resource.destinations.is_a?(String) ? [new_resource.destinations] : new_resource.destinations,
+      flags: new_resource.flags.is_a?(String) ? [new_resource.flags] : new_resource.flags,
+      source_prefix: new_resource.source_prefix,
+      destination_prefix: new_resource.destination_prefix,
+      filter_prefix: new_resource.filter_prefix
     )
   end
 
@@ -49,7 +49,7 @@ action :delete do
     action :nothing
   end
 
-  file "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
+  file "#{node['syslog_ng']['config_dir']}/conf.d/#{new_resource.index}#{new_resource.name}" do
     action :delete
     notifies :restart, 'service[syslog-ng]', :delayed
   end

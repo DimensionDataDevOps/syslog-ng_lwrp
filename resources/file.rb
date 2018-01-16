@@ -15,23 +15,23 @@ default_action :create
 action :create do
   include_recipe 'syslog-ng'
 
-  log_file = "#{log_base}/#{new_resource.name}/#{log_name}"
+  log_file = "#{new_resource.log_base}/#{new_resource.name}/#{new_resource.log_name}"
 
-  directory log_base do
+  directory new_resource.log_base do
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
     mode 0o0755
     action :create
   end
 
-  directory "#{log_base}/#{name}" do
+  directory "#{new_resource.log_base}/#{new_resource.name}" do
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
     mode 0o0755
     action :create
   end
 
-  syslog_ng_destination "#{name}_destination" do
+  syslog_ng_destination "#{new_resource.name}_destination" do
     index new_resource.index
     drivers(
       'driver' => 'file',
@@ -47,16 +47,16 @@ action :create do
     destinations ["#{new_resource.name}_destination"]
   end
 
-  template "/etc/cron.daily/#{name}_compress_logs" do
+  template "/etc/cron.daily/#{new_resource.name}_compress_logs" do
     source 'compress_logs.erb'
     cookbook 'syslog-ng'
     mode 0o0755
     owner 'root'
     group 'root'
     variables(
-      log_base: log_base,
+      log_base: new_resource.log_base,
       name: new_resource.name,
-      days_uncompressed: days_uncompressed
+      days_uncompressed: new_resource.days_uncompressed
     )
   end
 end
@@ -66,7 +66,7 @@ action :delete do
     action :delete
   end
 
-  template "/etc/cron.daily/#{name}_compress_logs" do
+  template "/etc/cron.daily/#{new_resource.name}_compress_logs" do
     action :delete
   end
 end

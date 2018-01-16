@@ -13,15 +13,15 @@ property :destination_protocol, default: 'udp'
 default_action :create
 
 action :create do
-  syslog_ng_destination "#{name}_destination" do
+  syslog_ng_destination "#{new_resource.name}_destination" do
     index new_resource.index
     drivers(
-      'driver' => destination_protocol,
-      'options' => "\"#{destination_host}\" port(#{destination_port})"
+      'driver' => new_resource.destination_protocol,
+      'options' => "\"#{new_resource.destination_host}\" port(#{new_resource.destination_port})"
     )
   end
 
-  syslog_ng_logpath "#{name}_logpath" do
+  syslog_ng_logpath "#{new_resource.name}_logpath" do
     action new_resource.sources ? :create : :delete
     index new_resource.index
     sources new_resource.sources
@@ -31,11 +31,11 @@ action :create do
 end
 
 action :delete do
-  syslog_ng_destination "#{name}_destination" do
+  syslog_ng_destination "#{new_resource.name}_destination" do
     action :delete
   end
 
-  syslog_ng_logpath "#{name}_logpath" do
+  syslog_ng_logpath "#{new_resource.name}_logpath" do
     action :delete
   end
 end

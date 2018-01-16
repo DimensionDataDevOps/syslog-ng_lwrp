@@ -14,19 +14,19 @@ default_action :create
 action :create do
   include_recipe 'syslog-ng'
 
-  tmpl = template "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
+  tmpl = template "#{node['syslog_ng']['config_dir']}/conf.d/#{new_resource.index}#{new_resource.name}" do
     action :create
-    source template_file
+    source new_resource.template_file
     owner node['syslog_ng']['user']
     group node['syslog_ng']['group']
     mode 0o0640
     cookbook 'syslog-ng'
 
     variables(
-      index: index,
+      index: new_resource.index,
       filter_name: new_resource.name,
-      filter_prefix: filter_prefix,
-      filter: filter
+      filter_prefix: new_resource.filter_prefix,
+      filter: new_resource.filter
     )
   end
 
@@ -38,7 +38,7 @@ action :delete do
     action :nothing
   end
 
-  file "#{node['syslog_ng']['config_dir']}/conf.d/#{index}#{name}" do
+  file "#{node['syslog_ng']['config_dir']}/conf.d/#{new_resource.index}#{new_resource.name}" do
     action :delete
     notifies :restart, 'service[syslog-ng]', :delayed
   end
